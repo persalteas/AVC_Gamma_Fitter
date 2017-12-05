@@ -26,3 +26,11 @@ mask_260 = load_untouch_nii(input_file);
 input_file = [ mask_folder 'mask_patient_170.nii' ];
 mask_170 = load_untouch_nii(input_file);
 
+%Matrice des masques
+masque048 = load_untouch_nii(input_mask048);
+masque249 = load_untouch_nii(input_mask249);
+masque260 = load_untouch_nii(input_mask260);
+masque170 = load_untouch_nii(input_mask170);
+% calcul des pixels parenchymateux
+masque170.img(:,:,17);
+
