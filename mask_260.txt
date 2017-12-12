@@ -1,4 +1,4 @@
-Coupe	Dim1	Dim2	Value
+Dim1	Dim2	Coupe	Value
 45	40	1	1.000000
 45	41	1	1.000000
 45	42	1	1.000000
