@@ -13,7 +13,7 @@ mask = load_untouch_nii(input_file);
 
 % Matrice du masque
 matrix_m = mask.img(:,:,:);
-matrix_m = matrix_m(:,:,1:20); % A supprimer si utilisation des bons masques
+%matrix_m = matrix_m(:,:,1:20); % A supprimer si utilisation des bons masques
 
 disp('Extraction des pixels parenchymateux des masques...')
 
@@ -75,9 +75,8 @@ mean_1 = mean(i_pixels(m_pixels(:,4)==1,:));
 mean_2 = mean(i_pixels(m_pixels(:,4)==2,:));
 mean_3 = mean(i_pixels(m_pixels(:,4)==3,:));
 
-hold on;
-figure(length(findobj('type','figure'))+1);
+nbfig=length(findobj('type','figure'));
+figure(nbfig+1);
 plot(1:tmax, mean_1, 'r', 1:tmax, mean_2, 'b', 1:tmax, mean_3, 'g')
-hold off;
 
 end

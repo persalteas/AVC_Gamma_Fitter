@@ -39,10 +39,10 @@ matrix_i_249 = pwi_249.img(:,:,:,:);
 matrix_i_260 = pwi_260.img(:,:,:,:);
 matrix_i_170 = pwi_170.img(:,:,:,:);
 
-matrix_m_048 = matrix_m_048(:,:,1:20);
-matrix_m_249 = matrix_m_249(:,:,1:20);
-matrix_m_260 = matrix_m_260(:,:,1:20);
-matrix_m_170 = matrix_m_170(:,:,1:20);
+% matrix_m_048 = matrix_m_048(:,:,1:20);
+% matrix_m_249 = matrix_m_249(:,:,1:20);
+% matrix_m_260 = matrix_m_260(:,:,1:20);
+% matrix_m_170 = matrix_m_170(:,:,1:20);
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% OUVERTURE DES MASQUES
