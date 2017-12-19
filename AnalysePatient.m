@@ -76,14 +76,28 @@ mean_1 = mean(i_pixels(m_pixels(:,4)==1,:));
 mean_2 = mean(i_pixels(m_pixels(:,4)==2,:));
 mean_3 = mean(i_pixels(m_pixels(:,4)==3,:));
 
-a=levenberg_marquardt(1:tmax, mean_1, [25.0 6.0 10.0 1.0], 0.001, 10000);
-a
+a=levenberg_marquardt(1:tmax, mean_1, [22.0 6.0 13.0 0.5], 0.001, 10000)
+gammatheo=arrayfun(@(x) gamma(x,a),1:tmax);
 
 nbfig=length(findobj('type','figure'));
 figure(nbfig+1);
-plot(1:tmax, mean_1, 'r', 1:tmax, mean_2, 'b', 1:tmax, mean_3, 'g')
+plot(1:tmax, mean_1, 'r', 1:tmax, mean_2, 'b', 1:tmax, mean_3, 'g',1:tmax,gammatheo,'m')
 xlabel('Temps')
 ylabel('Concentration')
-legend('Tissus Gris','Tissus Blancs','Lésion')
+legend('Tissus Gris','Tissus Blancs','Lésion','Gamma theo gris')
 
+end
+
+
+function f=gamma(t, a)
+    tmax = a(1);
+    ymax = a(2);
+    d = a(3);
+    alpha = a(4);
+    if (t<=d)
+        f = 0;
+    else
+        T = (t-d)/tmax;
+        f = ymax*T^alpha*exp(alpha*(1-T));
+    end
 end

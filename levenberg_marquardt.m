@@ -2,47 +2,49 @@
 
 function a=levenberg_marquardt(X, Y, a, lamb, nmax)
 	n = 1;
-	r_lamb = lamb*ones(1,nmax);
-	r_a = a*ones(4,nmax);
-	r_grad = zeros(4,nmax);
-	r_sse = zeros(1,nmax);
 	while n<nmax
-		grad = gcout(X, Y, a); % 4x1 vector
-		r_grad(:,n) = grad;
-		secderiv = hcout(X, a); % 4x4 matrix
-		disp(['====== n=',n]);
-		while (1)
-			HLM = (1+lamb)*secderiv;
+        grad = gcout(X, Y, a); % 4x1 vector
+        secderiv = hcout(X, a); % 4x4 matrix
+        disp(['====== n=',num2str(n)]);
+        while (1)
+			HLM = (ones(4)+diag(lamb*ones(1,4))).*secderiv;
 			dk = - grad/HLM;
-			disp(['l=',lamb, 'a=', a, 'DLM=', dk])
-			if dk>20
-				disp(['explosion !'])
-				break
+			disp(['l = ',num2str(lamb)])
+            disp(['a = ', num2str(a)])
+            disp(['DLM = ', num2str(dk)])
+%             if norm(dk)>20
+% 				disp('explosion !')
+% 				break
+%             end
+            if norm(dk)<0.0000001
+                disp('eteint...')
+                break
             end
-			if dk<0.000000001
-				disp(['eteint...'])
-				break
-            end
-			if cout(X, Y, a+dk ) < cout(X, Y, a)
-				a = a+dk;
-				r_a(:,n) = a;
-				lamb = lamb/10;
-				r_lamb(n) = lamb;
-				break
+            if a(1)+dk(1)>0
+                cout(X, Y, a)
+                cout(X, Y, a+dk )
+                if cout(X, Y, a+dk ) < cout(X, Y, a)
+                    a = a+dk;
+                    lamb = lamb/10;
+                    break
+                else
+                    lamb = lamb*10;
+                end
             else
-				lamb = lamb*10;
-				r_lamb(n)=lamb;
+                lamb=lamb*10;
             end
+            
         end
-		r_sse(n) = cout(X, Y, a);
-		if (dk>20 | dk<0.000000001)
+        %if (norm(dk)>20 || norm(dk)<0.000000001)
+        if (norm(dk)<0.000000001)
 				break
         end
-		n = n + 1;
+        n = n + 1;
     end
 	if n==nmax
-		disp(['poh trouve...']);
-    end
+		disp('poh trouve...');
+	end
+    
 end
 
 function f=lambda(t, a)
@@ -60,8 +62,8 @@ end
 
 function f=cout(X,Y,a)
     distances = zeros(size(X));
-    for i=1:size(X)
-        distances = (Y(i) - lambda(X(i),a))^2;
+    for i=1:length(X)
+        distances(i) = (Y(i) - lambda(X(i),a))^2;
     end
     f = 0.5*sum(distances);
 end
@@ -79,10 +81,10 @@ function f=gcout(X,Y, a)
             v = [0 0 0 0];
         else
             T = (t-d)/tmax;
+            dfdtmax = ymax*alpha*T^(alpha)*exp(alpha*(1-T))*(T-1)/tmax;
+            dfdymax = T^alpha*exp(alpha*(1-T));
             dfdd = -ymax*alpha*T^(alpha-1)*exp(alpha*(1-T))*(1-T)/tmax;
             dfdalpha = ymax*exp(alpha*(1-T))*T^alpha*(log(T)+1-T);
-            dfdymax = T^alpha*exp(alpha*(1-T));
-            dfdtmax = d*ymax*alpha*T^(alpha-1)*exp(alpha*(1-T))*(1-T)/tmax/tmax;
             distance = (y - lambda(t,a));
             v = [distance*dfdtmax distance*dfdymax distance*dfdd distance*dfdalpha];
         end
@@ -103,7 +105,8 @@ function f=hcout(X,a)
             v = zeros(4,4);
         else
             T = (t-d)/tmax;
-            dfdtmax = d*ymax*alpha*T^(alpha-1)*exp(alpha*(1-T))*(1-T)/tmax/tmax;
+            %dfdtmax = d*ymax*alpha*T^(alpha-1)*exp(alpha*(1-T))*(1-T)/tmax/tmax;
+            dfdtmax = ymax*alpha*T^(alpha)*exp(alpha*(1-T))*(T-1)/tmax;
             dfdymax = T^alpha*exp(alpha*(1-T));
             dfdd = -ymax*alpha*T^(alpha-1)*exp(alpha*(1-T))*(1-T)/tmax;
             dfdalpha = ymax*exp(alpha*(1-T))*T^alpha*(log(T)+1-T);
