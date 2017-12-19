@@ -78,5 +78,8 @@ mean_3 = mean(i_pixels(m_pixels(:,4)==3,:));
 nbfig=length(findobj('type','figure'));
 figure(nbfig+1);
 plot(1:tmax, mean_1, 'r', 1:tmax, mean_2, 'b', 1:tmax, mean_3, 'g')
+xlabel('Temps')
+ylabel('Concentration')
+legend('Tissus Gris','Tissus Blancs','Lésion')
 
 end
