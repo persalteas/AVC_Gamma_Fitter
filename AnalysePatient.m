@@ -84,7 +84,7 @@ figure(nbfig+1);
 plot(1:tmax, mean_1, 'r', 1:tmax, mean_2, 'b', 1:tmax, mean_3, 'g',1:tmax,gammatheo,'m')
 xlabel('Temps')
 ylabel('Concentration')
-legend('Tissus Gris','Tissus Blancs','Lésion','Gamma theo gris')
+legend('Tissus Gris','Tissus Blancs','Lésion','Gamma theo (gris)')
 
 end
 

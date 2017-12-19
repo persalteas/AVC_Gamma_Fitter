@@ -36,7 +36,7 @@ function a=levenberg_marquardt(X, Y, a, lamb, nmax)
             
         end
         %if (norm(dk)>20 || norm(dk)<0.000000001)
-        if (norm(dk)<0.000000001)
+        if (norm(dk)<0.0000001)
 				break
         end
         n = n + 1;
