@@ -67,6 +67,7 @@ for i=1:N
     fprintf(file,'%f\t',i_pixels(i,:));
     fprintf(file, '\r\n');
 end
+i_pixels(i_pixels<0) = 0;
 fclose(file);
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Affichage des dynamiques 
@@ -74,6 +75,9 @@ fclose(file);
 mean_1 = mean(i_pixels(m_pixels(:,4)==1,:));
 mean_2 = mean(i_pixels(m_pixels(:,4)==2,:));
 mean_3 = mean(i_pixels(m_pixels(:,4)==3,:));
+
+a=levenberg_marquardt(1:tmax, mean_1, [25.0 6.0 10.0 1.0], 0.001, 10000);
+a
 
 nbfig=length(findobj('type','figure'));
 figure(nbfig+1);
