@@ -5,13 +5,13 @@ function a=levenberg_marquardt(X, Y, a, lamb, nmax)
 	while n<nmax
         grad = gcout(X, Y, a); % 4x1 vector
         secderiv = hcout(X, a); % 4x4 matrix
-        disp(['====== n=',num2str(n)]);
-        while (1)
+        %disp(['====== n=',num2str(n)]);
+        while any(secderiv(:))
 			HLM = (ones(4)+diag(lamb*ones(1,4))).*secderiv;
 			dk = - grad/HLM;
-			disp(['l = ',num2str(lamb)])
-            disp(['a = ', num2str(a)])
-            disp(['DLM = ', num2str(dk)])
+%			disp(['l = ',num2str(lamb)])
+%            disp(['a = ', num2str(a)])
+%            disp(['dk = ', num2str(dk)])
 %             if norm(dk)>20
 % 				disp('explosion !')
 % 				break
@@ -20,15 +20,19 @@ function a=levenberg_marquardt(X, Y, a, lamb, nmax)
                 disp('eteint...')
                 break
             end
-            if a(1)+dk(1)>0
-                cout(X, Y, a)
-                cout(X, Y, a+dk )
-                if cout(X, Y, a+dk ) < cout(X, Y, a)
-                    a = a+dk;
-                    lamb = lamb/10;
+            if a(1)+dk(1)>0 && a(4)+dk(4)<100 && a(4)+dk(4)>0 && a(2)+dk(2) >0 % conditions sur les params
+                %cout(X, Y, a)
+                %cout(X, Y, a+dk )
+                if abs(cout(X, Y, a+dk )-cout(X, Y, a))<10^-6
                     break
                 else
-                    lamb = lamb*10;
+                    if cout(X, Y, a+dk ) < cout(X, Y, a)
+                        a = a+dk;
+                        lamb = lamb/10;
+                        break
+                    else
+                        lamb = lamb*10;
+                    end
                 end
             else
                 lamb=lamb*10;
@@ -36,11 +40,11 @@ function a=levenberg_marquardt(X, Y, a, lamb, nmax)
             
         end
         %if (norm(dk)>20 || norm(dk)<0.000000001)
-        if (norm(dk)<0.0000001)
+        if (norm(dk)<0.0000001 || abs(cout(X, Y, a+dk )-cout(X, Y, a))<10^-6)
 				break
         end
         n = n + 1;
-    end
+	end
 	if n==nmax
 		disp('poh trouve...');
 	end
