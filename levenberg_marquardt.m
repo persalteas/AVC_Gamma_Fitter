@@ -3,64 +3,48 @@
 function a=levenberg_marquardt(X, Y, a, lamb, nmax)
     nbfig=length(findobj('type','figure'));
 	n = 1;
-	r_lamb = lamb*ones(1,nmax);
-	r_a = a*ones(4,nmax);
-	r_grad = zeros(4,nmax);
-	r_sse = zeros(1,nmax);
 	while n<nmax
-		grad = gcout(X, Y, a); % 1x4 vector
-		r_grad(:,n) = grad;
-		secderiv = hcout(X, a); % 4x4 matrix
-		fprintf('============ n=%d ===========\na =',n)
-        disp(a)
-        nbfig = nbfig+1;
-        figure(nbfig);
-        hold on
-        plot(X, Y, 'r')
-        xlabel('Temps')
-        ylabel('Concentration')
-		while true
-            % Calcul de la direction du mouvement
-			HLM = (1+lamb)*secderiv;
+        grad = gcout(X, Y, a); % 4x1 vector
+        secderiv = hcout(X, a); % 4x4 matrix
+        %disp(['====== n=',num2str(n)]);
+        while any(secderiv(:))
+			HLM = (ones(4)+diag(lamb*ones(1,4))).*secderiv;
 			dk = - grad/HLM;
-            ndk = norm(dk);
-            fprintf('tentative lamb = %f  |dk| = %.10f  a+dk = ',lamb,ndk)
-            disp(a+dk)
-            
-            % Calcul de la fonction gamma avant et après le mouvement
-            la = zeros(size(X));
-            ladk = zeros(size(X));
-            for i=1:length(X)
-                la(i) = gamma(X(i),a);
-                ladk(i) = gamma(X(i), a+dk);
+%			disp(['l = ',num2str(lamb)])
+%            disp(['a = ', num2str(a)])
+%            disp(['dk = ', num2str(dk)])
+%             if norm(dk)>20
+% 				disp('explosion !')
+% 				break
+%             end
+            if norm(dk)<0.0000001
+                disp('eteint...')
+                break
             end
-            plot(X, la, 'b', X, ladk, 'g');
+            if a(1)+dk(1)>0 && a(4)+dk(4)<100 && a(4)+dk(4)>0 && a(2)+dk(2) >0 % conditions sur les params
+                %cout(X, Y, a)
+                %cout(X, Y, a+dk )
+                if abs(cout(X, Y, a+dk )-cout(X, Y, a))<10^-6
+                    break
+                else
+                    if cout(X, Y, a+dk ) < cout(X, Y, a)
+                        a = a+dk;
+                        lamb = lamb/10;
+                        break
+                    else
+                        lamb = lamb*10;
+                    end
+                end
+            else
+                lamb=lamb*10;
+            end
             
-			if ndk>20
-				disp('explosion !')
-				break
-			end
-			if ndk<1e-9
-				disp('eteint...')
-				break
-			end
-			if cout(X, Y, a+dk) < cout(X, Y, a)
-				a = a+dk;
-				r_a(:,n) = a;
-				lamb = lamb/10;
-				r_lamb(n) = lamb;
-				break
-			else
-				lamb = lamb*10;
-				r_lamb(n)=lamb;
-			end
-		end
-		r_sse(n) = cout(X, Y, a);
-		if (ndk>20 ||  ndk<1e-9)
+        end
+        %if (norm(dk)>20 || norm(dk)<0.000000001)
+        if (norm(dk)<0.0000001 || abs(cout(X, Y, a+dk )-cout(X, Y, a))<10^-6)
 				break
         end
-        hold off;
-		n = n + 1;
+        n = n + 1;
 	end
 	if n==nmax
 		disp('poh trouve...');
@@ -82,8 +66,8 @@ end
 
 function f=cout(X,Y,a)
     distances = zeros(size(X));
-    for i=1:size(X)
-        distances = (Y(i) - gamma(X(i),a))^2;
+    for i=1:length(X)
+        distances(i) = (Y(i) - lambda(X(i),a))^2;
     end
     f = 0.5*sum(distances);
 end
@@ -101,11 +85,11 @@ function f=gcout(X,Y, a)
             v = [0 0 0 0];
         else
             T = (t-d)/tmax;
+            dfdtmax = ymax*alpha*T^(alpha)*exp(alpha*(1-T))*(T-1)/tmax;
+            dfdymax = T^alpha*exp(alpha*(1-T));
             dfdd = -ymax*alpha*T^(alpha-1)*exp(alpha*(1-T))*(1-T)/tmax;
             dfdalpha = ymax*exp(alpha*(1-T))*T^alpha*(log(T)+1-T);
-            dfdymax = T^alpha*exp(alpha*(1-T));
-            dfdtmax = d*ymax*alpha*T^(alpha-1)*exp(alpha*(1-T))*(1-T)/tmax/tmax;
-            distance = (y - gamma(t,a));
+            distance = (y - lambda(t,a));
             v = [distance*dfdtmax distance*dfdymax distance*dfdd distance*dfdalpha];
         end
         f = f+v;
@@ -125,7 +109,8 @@ function f=hcout(X,a)
             v = zeros(4,4);
         else
             T = (t-d)/tmax;
-            dfdtmax = d*ymax*alpha*T^(alpha-1)*exp(alpha*(1-T))*(1-T)/tmax/tmax;
+            %dfdtmax = d*ymax*alpha*T^(alpha-1)*exp(alpha*(1-T))*(1-T)/tmax/tmax;
+            dfdtmax = ymax*alpha*T^(alpha)*exp(alpha*(1-T))*(T-1)/tmax;
             dfdymax = T^alpha*exp(alpha*(1-T));
             dfdd = -ymax*alpha*T^(alpha-1)*exp(alpha*(1-T))*(1-T)/tmax;
             dfdalpha = ymax*exp(alpha*(1-T))*T^alpha*(log(T)+1-T);
