@@ -76,7 +76,7 @@ mean_1 = mean(i_pixels(m_pixels(:,4)==1,:));
 mean_2 = mean(i_pixels(m_pixels(:,4)==2,:));
 mean_3 = mean(i_pixels(m_pixels(:,4)==3,:));
 
-a=levenberg_marquardt(1:tmax, mean_1, [25.0 6.0 10.0 1.0], 0.001, 10000);
+a=levenberg_marquardt(1:tmax, mean_1, [15.0 6.0 10.0 0.5], 0.001, 10000);
 a
 
 nbfig=length(findobj('type','figure'));

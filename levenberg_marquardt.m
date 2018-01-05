@@ -1,51 +1,73 @@
 
 
 function a=levenberg_marquardt(X, Y, a, lamb, nmax)
+    nbfig=length(findobj('type','figure'));
 	n = 1;
 	r_lamb = lamb*ones(1,nmax);
 	r_a = a*ones(4,nmax);
 	r_grad = zeros(4,nmax);
 	r_sse = zeros(1,nmax);
 	while n<nmax
-		grad = gcout(X, Y, a); % 4x1 vector
+		grad = gcout(X, Y, a); % 1x4 vector
 		r_grad(:,n) = grad;
 		secderiv = hcout(X, a); % 4x4 matrix
-		disp(['====== n=',n]);
-		while (1)
+		fprintf('============ n=%d ===========\na =',n)
+        disp(a)
+        nbfig = nbfig+1;
+        figure(nbfig);
+        hold on
+        plot(X, Y, 'r')
+        xlabel('Temps')
+        ylabel('Concentration')
+		while true
+            % Calcul de la direction du mouvement
 			HLM = (1+lamb)*secderiv;
 			dk = - grad/HLM;
-			disp(['l=',lamb, 'a=', a, 'DLM=', dk])
-			if dk>20
-				disp(['explosion !'])
-				break
+            ndk = norm(dk);
+            fprintf('tentative lamb = %f  |dk| = %.10f  a+dk = ',lamb,ndk)
+            disp(a+dk)
+            
+            % Calcul de la fonction gamma avant et après le mouvement
+            la = zeros(size(X));
+            ladk = zeros(size(X));
+            for i=1:length(X)
+                la(i) = gamma(X(i),a);
+                ladk(i) = gamma(X(i), a+dk);
             end
-			if dk<0.000000001
-				disp(['eteint...'])
+            plot(X, la, 'b', X, ladk, 'g');
+            
+			if ndk>20
+				disp('explosion !')
 				break
-            end
-			if cout(X, Y, a+dk ) < cout(X, Y, a)
+			end
+			if ndk<1e-9
+				disp('eteint...')
+				break
+			end
+			if cout(X, Y, a+dk) < cout(X, Y, a)
 				a = a+dk;
 				r_a(:,n) = a;
 				lamb = lamb/10;
 				r_lamb(n) = lamb;
 				break
-            else
+			else
 				lamb = lamb*10;
 				r_lamb(n)=lamb;
-            end
-        end
+			end
+		end
 		r_sse(n) = cout(X, Y, a);
-		if (dk>20 | dk<0.000000001)
+		if (ndk>20 ||  ndk<1e-9)
 				break
         end
+        hold off;
 		n = n + 1;
-    end
+	end
 	if n==nmax
-		disp(['poh trouve...']);
-    end
+		disp('poh trouve...');
+	end
 end
 
-function f=lambda(t, a)
+function f=gamma(t, a)
     tmax = a(1);
     ymax = a(2);
     d = a(3);
@@ -61,7 +83,7 @@ end
 function f=cout(X,Y,a)
     distances = zeros(size(X));
     for i=1:size(X)
-        distances = (Y(i) - lambda(X(i),a))^2;
+        distances = (Y(i) - gamma(X(i),a))^2;
     end
     f = 0.5*sum(distances);
 end
@@ -83,7 +105,7 @@ function f=gcout(X,Y, a)
             dfdalpha = ymax*exp(alpha*(1-T))*T^alpha*(log(T)+1-T);
             dfdymax = T^alpha*exp(alpha*(1-T));
             dfdtmax = d*ymax*alpha*T^(alpha-1)*exp(alpha*(1-T))*(1-T)/tmax/tmax;
-            distance = (y - lambda(t,a));
+            distance = (y - gamma(t,a));
             v = [distance*dfdtmax distance*dfdymax distance*dfdd distance*dfdalpha];
         end
         f = f+v;
@@ -116,7 +138,8 @@ function f=hcout(X,a)
     end
 end
 
-% function f=glambda(t, a)
+
+% function f=ggamma(t, a)
 %     tmax = a(1);
 %     ymax = a(2);
 %     d = a(3);
@@ -129,7 +152,7 @@ end
 %     end
 % end
 
-% function f=hlambda(ymax, tmax, alpha, d, t)
+% function f=hgamma(ymax, tmax, alpha, d, t)
 %     if (t<=d)
 %         f = 0;
 %     else

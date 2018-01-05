@@ -118,8 +118,8 @@ fclose(file170);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% PIXELS DES IMAGES 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 disp('Extraction des pixels parenchymateux des images...')
-tmax = size(matrix_i_048,4);
-i_pixels48 = zeros(N48, tmax);  % c a d 60
+tmax = size(matrix_i_048,4);  % c a d 60
+i_pixels48 = zeros(N48, tmax);  
 i_pixels249 = zeros(N249, tmax);
 i_pixels260 = zeros(N260, tmax);
 i_pixels170 = zeros(N170, tmax);
@@ -136,6 +136,7 @@ for i=1:N48
     fprintf(file048,'%f\t',i_pixels48(i,:));
     fprintf(file048, '\r\n');
 end
+i_pixels48(i_pixels48<0) = 0;
 fclose(file048);
 
 file249 = fopen('img_249.txt','w');
