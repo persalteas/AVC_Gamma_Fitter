@@ -10,8 +10,8 @@ warning('off', 'MATLAB:plot:IgnoreImaginaryXYPart'); % Ne pas afficher les warni
 % patient = input('\nNumero du patient ? (3 caracteres) : ','s');
 % AnalysePatient(patient, display);
 
-AnalysePatient('048',1);
-%AnalysePatient('249',1);
+%AnalysePatient('048',1);
+AnalysePatient('249',1);
 %AnalysePatient('170',1);
 %AnalysePatient('260',1);
 

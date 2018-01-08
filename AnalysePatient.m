@@ -109,20 +109,29 @@ function AnalysePatient(ind_patient, display)
 	end
 	fclose(file);
 	fprintf('Parametres des lois Gamma estimees sauvegardes dans params_%s.txt\n', ind_patient);
-	R2 = sum(i_pixels-mean(i_pixels,2),2)./sum(i_pixels-gammatheo,2);
+	R2 = sum(i_pixels-repmat(mean(i_pixels,2),1,50),2)./sum(i_pixels-gammatheo,2);
     R2_mat=ones(size(matrix_m))*NaN;
-    M=2;
-    m=0;
+    M=max(R2);
+    m=min(R2);
     for i = 1:N
-        if(R2(i)<0)
-           R2_mat(m_pixels(i,1),m_pixels(i,2), m_pixels(i,3))= 0;
-        else if (R2(i)>2)
-           R2_mat(m_pixels(i,1),m_pixels(i,2), m_pixels(i,3))= 255;
-            else       
-                R2_mat(m_pixels(i,1),m_pixels(i,2), m_pixels(i,3))=R2(i)*255/(M-m)+255*m/(m-M);
-            end
-        end 
+        R2_mat(m_pixels(i,1),m_pixels(i,2), m_pixels(i,3))=R2(i)*255/(M-m)+255*m/(m-M);
+% A ajuster à partir du code suivant pour avoir plus de nuances de gris        
+%         if(R2(i)<=0)
+%            R2_mat(m_pixels(i,1),m_pixels(i,2), m_pixels(i,3))= 0;
+%         else if (R2(i)>=2)
+%            R2_mat(m_pixels(i,1),m_pixels(i,2), m_pixels(i,3))= 255;
+%             else       
+%                 R2_mat(m_pixels(i,1),m_pixels(i,2), m_pixels(i,3))=R2(i)*255/(M-m)+255*m/(m-M);
+%             end
+%         end 
     end
+    for coupe = 1:size(R2_mat,3)
+        image(R2_mat(:,:,coupe),'CDataMapping','scaled')
+        colorbar
+        hold off;
+        waitforbuttonpress; % Attend le clic de l'utilisateur sur le graphique pour passer au suivant
+        close;
+    end    
 end
 
 % la fonction de distribution gamma (fonction du temps)
