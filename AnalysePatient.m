@@ -94,7 +94,7 @@ function AnalysePatient(ind_patient, display)
 
 	file = fopen(['params_' ind_patient '.txt'],'w');
 	fprintf(file , [  'tmax' '\t' 'ymax' '\t' 'd' '\t' 'a' '\r\n']);
-	for i=100:200
+	for i=1:N
 		if (display==1 || display==3), fprintf('analyse du pixel %d... ',i), end
 		if max(i_pixels(i,:)) == 0 % ce pixel est toujours eteint
 			params(i,:) = [-1 0 -1 -1];		  % params
@@ -109,8 +109,8 @@ function AnalysePatient(ind_patient, display)
 	end
 	fclose(file);
 	fprintf('Parametres des lois Gamma estimees sauvegardes dans params_%s.txt\n', ind_patient);
-	% R2 = sum(i_pixels-mean(i_pixels,2),2)./sum(i_pixels-gammatheo,2);
-
+	R2 = sum(i_pixels-mean(i_pixels,2),2)./sum(i_pixels-gammatheo,2);
+    
 end
 
 % la fonction de distribution gamma (fonction du temps)

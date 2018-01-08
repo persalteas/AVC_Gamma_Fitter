@@ -11,7 +11,9 @@ warning('off', 'MATLAB:plot:IgnoreImaginaryXYPart'); % Ne pas afficher les warni
 % AnalysePatient(patient, display);
 
 AnalysePatient('048',1);
-
+%AnalysePatient('249',1);
+%AnalysePatient('170',1);
+%AnalysePatient('260',1);
 
 %% A DISCUTER LA PROCHAINE FOIS:
 %

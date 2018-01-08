@@ -42,8 +42,8 @@ function params=levenberg_marquardt(X, Y, params, lamb, nmax, numpixel, display)
 		grad = gcout(X, Y, params); % 4x1 vector
 		secderiv = hcout(X, params); % 4x4 matrix
 
-		% while any(secderiv(:)) % pourquoi ?
-		while true 
+		while any(secderiv(:)) % pourquoi ?
+		%while true 
 			subiteration_counter = subiteration_counter + 1;
 			
 			% calcul de la direction du mouvement dk:
@@ -64,7 +64,7 @@ function params=levenberg_marquardt(X, Y, params, lamb, nmax, numpixel, display)
 			end
 				
 			% On n'autorise que les mouvements a parametres positifs
-			if prod(newparams>0)
+			if prod(newparams>0) && newparams(4)<100
 				
 				% Tests de la convergence
 				if ndk < 10^-7 % Le mouvement propose est trop petit: l'algorithme s'est eteint, on s'arrete ici.
