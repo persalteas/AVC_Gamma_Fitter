@@ -42,7 +42,7 @@ function params=levenberg_marquardt(X, Y, params, lamb, nmax, numpixel, display)
 		grad = gcout(X, Y, params); % 4x1 vector
 		secderiv = hcout(X, params); % 4x4 matrix
 
-		while any(secderiv(:)) % pourquoi ?
+		while any(secderiv(:)) % si hessienne nulle, pas de calcul dk possible
 		%while true 
 			subiteration_counter = subiteration_counter + 1;
 			
