@@ -98,7 +98,7 @@ function AnalysePatient(ind_patient, display)
 		if (display==1 || display==3), fprintf('analyse du pixel %d... ',i), end
 		if max(i_pixels(i,:)) == 0 % ce pixel est toujours eteint
 			params(i,:) = [-1 0 -1 -1];		  % params
-			gammatheo(i,:) = zeros(1,tmax); % shape of the gamma distribution
+			%gammatheo(i,:) = zeros(1,tmax); % shape of the gamma distribution
 			if (display==1 || display==3), disp('pixel toujours eteint.'), end
 		else
 			params(i,:) = levenberg_marquardt(1:tmax, i_pixels(i,:), params_ini(m_pixels(i,4),:), 0.1, 10000, i, display); % params
@@ -111,9 +111,15 @@ function AnalysePatient(ind_patient, display)
 	fprintf('Parametres des lois Gamma estimees sauvegardes dans params_%s.txt\n', ind_patient);
 
 	%R2 = sum(i_pixels-repmat(mean(i_pixels,2),1,50),2)./sum(i_pixels-gammatheo,2);
-    R2 = sum((i_pixels-gammatheo).^2,2)./sum(i_pixels,2).^2; % Essai autre version de R2
+    
+    
+    Max_classes=zeros(N,1);
+    Max_classes(m_pixels(:,4)==1)=max(max(i_pixels(m_pixels(:,4)==1,:),[],2));
+    Max_classes(m_pixels(:,4)==2)=max(max(i_pixels(m_pixels(:,4)==2,:),[],2));
+    Max_classes(m_pixels(:,4)==3)=max(max(i_pixels(m_pixels(:,4)==3,:),[],2));
+    R2 = sum(abs(i_pixels-gammatheo),2)./(Max_classes.*tmax);
 
-    R2_mat=ones(size(matrix_m))*NaN;
+    R2_mat=zeros(size(matrix_m));
     M=max(R2);
     m=min(R2);
     for i = 1:N
@@ -121,7 +127,7 @@ function AnalysePatient(ind_patient, display)
 % A ajuster à partir du code suivant pour avoir plus de nuances de gris        
 %         if(R2(i)<=0)
 %            R2_mat(m_pixels(i,1),m_pixels(i,2), m_pixels(i,3))= 0;
-%         else if (R2(i)>=2)
+%R2(m_pixels(:,4)==3,:)=R2(m_pixels(:,4)==3,:)./repmat(max(max(i_pixels(m_pixels(:,4)==3,:),[],2)),sum(m_pixels(:,4)==3),1);         else if (R2(i)>=2)
 %            R2_mat(m_pixels(i,1),m_pixels(i,2), m_pixels(i,3))= 255;
 %             else       
 %                 R2_mat(m_pixels(i,1),m_pixels(i,2), m_pixels(i,3))=R2(i)*255/(M-m)+255*m/(m-M);
@@ -129,13 +135,14 @@ function AnalysePatient(ind_patient, display)
 %         end 
     end
     
-    for coupe = 1:size(R2_mat,3)
-        image(R2_mat(:,:,coupe),'CDataMapping','scaled')
-        colorbar
-        hold off;
-        waitforbuttonpress; % Attend le clic de l'utilisateur sur le graphique pour passer au suivant
-        close;
-    end    
+     for coupe = 1:size(R2_mat,3)
+         image(R2_mat(:,:,coupe),'CDataMapping','scaled')
+         title(["coupe : " coupe])
+         colorbar
+         hold off;
+         waitforbuttonpress; % Attend le clic de l'utilisateur sur le graphique pour passer au suivant
+         close;
+     end    
     
     nii=make_nii(R2_mat);
     save_nii(nii,['result_' ind_patient '.nii'])

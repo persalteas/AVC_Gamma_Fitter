@@ -12,16 +12,5 @@ warning('off', 'MATLAB:plot:IgnoreImaginaryXYPart'); % Ne pas afficher les warni
 
 %AnalysePatient('048',1);
 AnalysePatient('249',1);
-%AnalysePatient('170',1);
-%AnalysePatient('260',1);
-
-%% A DISCUTER LA PROCHAINE FOIS:
-%
-%	- Pourquoi d = find(mean_1>=0.4,1) comme valeur initiale ?
-%	- Pourquoi la fonction de cout c'est 1/2 de la somme des écarts (et pas	1/N) ?
-%	- Pourquoi while any(secderiv(:)) ?
-%	- Le projet demande d'utiliser R² comme fonction de cout non ?
-%		Nous on l'a fait en minimisant 0.5*sum(Yt - f(t))
-%		J'ai l'impression qu'elle veut qu'on minimise sum(Yt-<Yt>)/sum(Yt-f(t))
-%		qui est pourtant indéfinie quand Yt=f(t), notamment quand les deux sont nulles
-%
+%AnalysePatient('170',3);
+%AnalysePatient('260',3);
