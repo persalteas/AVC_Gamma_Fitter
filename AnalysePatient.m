@@ -97,7 +97,7 @@ function AnalysePatient(ind_patient, display)
 	for i=1:N
 		if (display==1 || display==3), fprintf('analyse du pixel %d... ',i), end
 		if max(i_pixels(i,:)) == 0 % ce pixel est toujours eteint
-			params(i,:) = [-1 0 -1 -1];		  % params
+			params(i,:) = [NaN NaN NaN NaN];		  % params
 			%gammatheo(i,:) = zeros(1,tmax); % shape of the gamma distribution
 			if (display==1 || display==3), disp('pixel toujours eteint.'), end
 		else
@@ -124,15 +124,6 @@ function AnalysePatient(ind_patient, display)
     m=min(R2);
     for i = 1:N
         R2_mat(m_pixels(i,1),m_pixels(i,2), m_pixels(i,3))=R2(i)*255/(M-m)+255*m/(m-M);
-% A ajuster à partir du code suivant pour avoir plus de nuances de gris        
-%         if(R2(i)<=0)
-%            R2_mat(m_pixels(i,1),m_pixels(i,2), m_pixels(i,3))= 0;
-%R2(m_pixels(:,4)==3,:)=R2(m_pixels(:,4)==3,:)./repmat(max(max(i_pixels(m_pixels(:,4)==3,:),[],2)),sum(m_pixels(:,4)==3),1);         else if (R2(i)>=2)
-%            R2_mat(m_pixels(i,1),m_pixels(i,2), m_pixels(i,3))= 255;
-%             else       
-%                 R2_mat(m_pixels(i,1),m_pixels(i,2), m_pixels(i,3))=R2(i)*255/(M-m)+255*m/(m-M);
-%             end
-%         end 
     end
     
      for coupe = 1:size(R2_mat,3)
@@ -146,6 +137,28 @@ function AnalysePatient(ind_patient, display)
     
     nii=make_nii(R2_mat);
     save_nii(nii,['result_' ind_patient '.nii'])
+    
+    mean(params(m_pixels(:,4)==1,:),'omitnan')
+    mean(params(m_pixels(:,4)==2,:),'omitnan')
+    mean(params(m_pixels(:,4)==3,:),'omitnan')
+    std(params(m_pixels(:,4)==1,:),'omitnan')
+    std(params(m_pixels(:,4)==2,:),'omitnan')
+    std(params(m_pixels(:,4)==3,:),'omitnan')
+    
+    %Tmax
+    for i=1:3
+        subplot(3,4,i)
+        p_tmax=params(m_pixels(:,4)==i,1);
+        hist(p_tmax(p_tmax<50))
+    end
+    
+    %Ymax
+    for i=1:3
+        subplot(3,1,i)
+        p_ymax=params(m_pixels(:,4)==i,2);
+        hist(p_ymax(p_ymax<100))
+    end
+    
     
 end
 
