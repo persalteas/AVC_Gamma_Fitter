@@ -128,7 +128,7 @@ function AnalysePatient(ind_patient, display)
     
      for coupe = 1:size(R2_mat,3)
          image(R2_mat(:,:,coupe),'CDataMapping','scaled')
-         title(["coupe : " coupe])
+         title(['coupe : ' coupe])
          colorbar
          hold off;
          waitforbuttonpress; % Attend le clic de l'utilisateur sur le graphique pour passer au suivant
@@ -147,10 +147,12 @@ function AnalysePatient(ind_patient, display)
     
     %Tmax
     figure(10) %10 pour être sur de ne pas ecraser une figure avant, a modifier en fonction du nombre de fenetres ouvertes.
+    title(['Patient ' num2str(ind_patient)])
     for i=1:3
         subplot(3,1,i)
         p_tmax=params(m_pixels(:,4)==i,1);
         hist(p_tmax(p_tmax<50))
+        title(['tmax ' num2str(ind_patient)])
     end
     
     %Ymax
@@ -159,6 +161,7 @@ function AnalysePatient(ind_patient, display)
         subplot(3,1,i)
         p_ymax=params(m_pixels(:,4)==i,2);
         hist(p_ymax(p_ymax<100))
+        title(['ymax ' num2str(ind_patient)])
     end
     
     %d
@@ -167,6 +170,7 @@ function AnalysePatient(ind_patient, display)
         subplot(3,1,i)
         p_d=params(m_pixels(:,4)==i,3);
         hist(p_d)
+        title(['d ' num2str(ind_patient)])
     end
     
     %alpha
@@ -175,6 +179,7 @@ function AnalysePatient(ind_patient, display)
         subplot(3,1,i)
         p_alpha=params(m_pixels(:,4)==i,4);
         hist(p_alpha)
+        title(['alpha ' num2str(ind_patient)])
     end
     
     
