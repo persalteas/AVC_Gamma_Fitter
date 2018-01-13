@@ -151,6 +151,7 @@ function AnalysePatient(ind_patient, display)
         subplot(3,1,i)
         p_tmax=params(m_pixels(:,4)==i,1);
         histogram(p_tmax(p_tmax<50),15)
+        xlim([0,50])
     end
     
     %Ymax
@@ -159,6 +160,7 @@ function AnalysePatient(ind_patient, display)
         subplot(3,1,i)
         p_ymax=params(m_pixels(:,4)==i,2);
         histogram(p_ymax(p_ymax<60),15)
+        xlim([0,60])
     end
     
     %d
@@ -167,6 +169,7 @@ function AnalysePatient(ind_patient, display)
         subplot(3,1,i)
         p_d=params(m_pixels(:,4)==i,3);
         histogram(p_d(p_d<50),15)
+        xlim([0,50])
     end
     
     %alpha
@@ -175,6 +178,7 @@ function AnalysePatient(ind_patient, display)
         subplot(3,1,i)
         p_alpha=params(m_pixels(:,4)==i,4);
         histogram(p_alpha(p_alpha<50),15)
+        xlim([0,50])
     end
     
     
