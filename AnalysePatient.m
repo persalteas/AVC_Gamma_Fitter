@@ -148,7 +148,7 @@ function AnalysePatient(ind_patient, display)
     %Tmax
     figure(10) %10 pour être sur de ne pas ecraser une figure avant, a modifier en fonction du nombre de fenetres ouvertes.
     for i=1:3
-        subplot(3,4,i)
+        subplot(3,1,i)
         p_tmax=params(m_pixels(:,4)==i,1);
         hist(p_tmax(p_tmax<50))
     end
