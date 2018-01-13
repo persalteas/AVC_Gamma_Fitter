@@ -146,7 +146,7 @@ function AnalysePatient(ind_patient, display)
     std(params(m_pixels(:,4)==3,:),'omitnan')
     
     %Tmax
-    figure(10)
+    figure(10) %10 pour être sur de ne pas ecraser une figure avant, a modifier en fonction du nombre de fenetres ouvertes.
     for i=1:3
         subplot(3,4,i)
         p_tmax=params(m_pixels(:,4)==i,1);
