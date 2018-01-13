@@ -151,8 +151,10 @@ function AnalysePatient(ind_patient, display)
     for i=1:3
         subplot(3,1,i)
         p_tmax=params(m_pixels(:,4)==i,1);
-        hist(p_tmax(p_tmax<50))
-        title(['tmax ' num2str(ind_patient)])
+        %hist(p_tmax(p_tmax<50))
+        %title(['tmax ' num2str(ind_patient)])
+        histogram(p_tmax(p_tmax<50),15)
+        xlim([0,50])
     end
     
     %Ymax
@@ -160,8 +162,10 @@ function AnalysePatient(ind_patient, display)
     for i=1:3
         subplot(3,1,i)
         p_ymax=params(m_pixels(:,4)==i,2);
-        hist(p_ymax(p_ymax<100))
-        title(['ymax ' num2str(ind_patient)])
+        %hist(p_ymax(p_ymax<100))
+        %title(['ymax ' num2str(ind_patient)])
+        histogram(p_ymax(p_ymax<60),15)
+        xlim([0,60])
     end
     
     %d
@@ -169,8 +173,9 @@ function AnalysePatient(ind_patient, display)
     for i=1:3
         subplot(3,1,i)
         p_d=params(m_pixels(:,4)==i,3);
-        hist(p_d)
-        title(['d ' num2str(ind_patient)])
+        %title(['d ' num2str(ind_patient)])
+        histogram(p_d(p_d<50),15)
+        xlim([0,50])
     end
     
     %alpha
@@ -178,8 +183,9 @@ function AnalysePatient(ind_patient, display)
     for i=1:3
         subplot(3,1,i)
         p_alpha=params(m_pixels(:,4)==i,4);
-        hist(p_alpha)
-        title(['alpha ' num2str(ind_patient)])
+        %title(['alpha ' num2str(ind_patient)])
+        histogram(p_alpha(p_alpha<50),15)
+        xlim([0,50])
     end
     
     
