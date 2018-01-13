@@ -146,6 +146,7 @@ function AnalysePatient(ind_patient, display)
     std(params(m_pixels(:,4)==3,:),'omitnan')
     
     %Tmax
+    figure(10)
     for i=1:3
         subplot(3,4,i)
         p_tmax=params(m_pixels(:,4)==i,1);
@@ -153,10 +154,27 @@ function AnalysePatient(ind_patient, display)
     end
     
     %Ymax
+    figure(11)
     for i=1:3
         subplot(3,1,i)
         p_ymax=params(m_pixels(:,4)==i,2);
         hist(p_ymax(p_ymax<100))
+    end
+    
+    %d
+    figure(12)
+    for i=1:3
+        subplot(3,1,i)
+        p_d=params(m_pixels(:,4)==i,3);
+        hist(p_d)
+    end
+    
+    %alpha
+    figure(13)
+    for i=1:3
+        subplot(3,1,i)
+        p_alpha=params(m_pixels(:,4)==i,4);
+        hist(p_alpha)
     end
     
     
