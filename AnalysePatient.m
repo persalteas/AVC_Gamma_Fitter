@@ -110,15 +110,14 @@ function AnalysePatient(ind_patient, display)
 	fclose(file);
 	fprintf('Parametres des lois Gamma estimees sauvegardes dans params_%s.txt\n', ind_patient);
 
-	%R2 = sum(i_pixels-repmat(mean(i_pixels,2),1,50),2)./sum(i_pixels-gammatheo,2);
-    
-    
+    % Calcul du R2
     Max_classes=zeros(N,1);
     Max_classes(m_pixels(:,4)==1)=max(max(i_pixels(m_pixels(:,4)==1,:),[],2));
     Max_classes(m_pixels(:,4)==2)=max(max(i_pixels(m_pixels(:,4)==2,:),[],2));
     Max_classes(m_pixels(:,4)==3)=max(max(i_pixels(m_pixels(:,4)==3,:),[],2));
     R2 = sum(abs(i_pixels-gammatheo),2)./(Max_classes.*tmax);
 
+    % Convertion en matrice pour l'afficher
     R2_mat=zeros(size(matrix_m));
     M=max(R2);
     m=min(R2);
@@ -126,6 +125,7 @@ function AnalysePatient(ind_patient, display)
         R2_mat(m_pixels(i,1),m_pixels(i,2), m_pixels(i,3))=R2(i)*255/(M-m)+255*m/(m-M);
     end
     
+    % Affichage du R2 par coupe
      for coupe = 1:size(R2_mat,3)
          image(R2_mat(:,:,coupe),'CDataMapping','scaled')
          title(['coupe : ' coupe])
@@ -135,9 +135,11 @@ function AnalysePatient(ind_patient, display)
          close;
      end    
     
+    % Sauvegarde au format nii
     nii=make_nii(R2_mat);
     save_nii(nii,['result_' ind_patient '.nii'])
     
+    % Statistiques sur les paramètres
     mean(params(m_pixels(:,4)==1,:),'omitnan')
     mean(params(m_pixels(:,4)==2,:),'omitnan')
     mean(params(m_pixels(:,4)==3,:),'omitnan')
@@ -146,7 +148,7 @@ function AnalysePatient(ind_patient, display)
     std(params(m_pixels(:,4)==3,:),'omitnan')
     
     %Tmax
-    figure(10) %10 pour être sur de ne pas ecraser une figure avant, a modifier en fonction du nombre de fenetres ouvertes.
+    figure(length(findobj('type','figure'))+1) 
     title(['Patient ' num2str(ind_patient)])
     for i=1:3
         subplot(3,1,i)
@@ -158,7 +160,7 @@ function AnalysePatient(ind_patient, display)
     end
     
     %Ymax
-    figure(11)
+    figure(length(findobj('type','figure'))+2)
     for i=1:3
         subplot(3,1,i)
         p_ymax=params(m_pixels(:,4)==i,2);
@@ -169,7 +171,7 @@ function AnalysePatient(ind_patient, display)
     end
     
     %d
-    figure(12)
+    figure(length(findobj('type','figure'))+3)
     for i=1:3
         subplot(3,1,i)
         p_d=params(m_pixels(:,4)==i,3);
@@ -179,7 +181,7 @@ function AnalysePatient(ind_patient, display)
     end
     
     %alpha
-    figure(13)
+    figure(length(findobj('type','figure'))+4)
     for i=1:3
         subplot(3,1,i)
         p_alpha=params(m_pixels(:,4)==i,4);
